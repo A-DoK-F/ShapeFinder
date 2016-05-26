@@ -18,12 +18,12 @@
     <div id="divg">
       <h1>Essayer Shape Finder Gratuitement!</h1>
       <img src="geometryshapes.gif"/><br>
-      <button type="button" name="button"><a href="#">Essayer Maintenant</a></button>
+      <button type="button" name="button"><a href="essayer.php">Essayer Maintenant</a></button>
     </div>
     <div id="divd">
       <h1>Inscription / Connexion</h1>
       <img src="geometryshapes.gif"/><br>
-      <a href="#" data-toggle="modal" data-target="#login-modal"><button>Connexion</button></a>
+      <a href="#" data-toggle="modal" data-target="#login-modal"><button>Connexion/Inscription</button></a>
 
       <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
           	  <div class="modal-dialog">
@@ -34,14 +34,18 @@
       					<input type="password" name="pass" placeholder="Mot de passe">
       					<input type="submit" name="submit" class="login loginmodal-submit" value="Connexion">
       				  </form>
-
-      				  <div class="login loginmodal-submit">
-      					<a href="#">Inscription</a>
-      				  </div>
       				</div>
+              <div class="loginmodal-container">
+                <h1>S'enregistrer</h1><br>
+                <form action="inscript.php" method="post">
+                  <input type="text" name="login" placeholder="Nom d'utilisateur">
+                  <input type="password" name="pass" placeholder="Mot de passe">
+                  <input type="password" name="passv" placeholder="Verif. Mot de passe">
+                  <input type="submit" name="submit" class="login loginmodal-submit" value="Inscription">
+                </form>
+              </div>
+            </div>
       			</div>
       		  </div>
-    </div>
-      </div>
 </body>
 </html>
