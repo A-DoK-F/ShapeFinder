@@ -30,9 +30,9 @@
       				<div class="loginmodal-container">
       					<h1>Se connecter</h1><br>
       				  <form method="post" action="login.php">
-      					<input type="text" name="user" placeholder="Nom d'utilisateur">
+      					<input type="text" name="login" placeholder="Nom d'utilisateur">
       					<input type="password" name="pass" placeholder="Mot de passe">
-      					<input type="submit" name="login" class="login loginmodal-submit" value="Connexion">
+      					<input type="submit" name="submit" class="login loginmodal-submit" value="Connexion">
       				  </form>
 
       				  <div class="login loginmodal-submit">

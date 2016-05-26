@@ -2,7 +2,7 @@
  include_once 'connbdd.php';
 
 	mysql_select_db($nom_base_donnees, $conn);
-if(isset($_POST) && !empty($_POST['user']) && !empty($_POST['pass'])) {
+if(isset($_POST) && !empty($_POST['login']) && !empty($_POST['pass'])) {
  extract($_POST);
 
  $sql = "select pwd from tbl_user where login='".$login."'";
@@ -18,7 +18,7 @@ if(isset($_POST) && !empty($_POST['user']) && !empty($_POST['pass'])) {
  else {
    session_start();
    $_SESSION['login'] = $login;
-
+   echo "Connexion réussie";
    include 'redirection.php';
 
  }
