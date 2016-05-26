@@ -18,7 +18,7 @@
     <div id="divg">
       <h1>Résultats</h1><br>
       BRAVO!
-      <button type="button" name="button"><a href="essayer.php">Rejouer</a></button>
+      <a href="essayer.php"><button type="button" name="button">Rejouer</button></a>
     </div>
     <div id="divd">
       <h1>Inscription / Connexion</h1>
