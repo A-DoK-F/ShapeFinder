@@ -11,7 +11,7 @@ import mysql.connector
 
 changed = False
 
-conn = mysql.connector.connect(host="localhost",user="root",password="puyupuyu2", database="ShapeFinder")
+conn = mysql.connector.connect(host="localhost",user="root",password="1234", database="ShapeFinder")
 cursor = conn.cursor()
 
 class LoginFrame(Frame):
