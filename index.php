@@ -20,9 +20,11 @@
       <img src="img/geometryshapes.gif"/><br>
       <a href="essayer.php"><button type="button" name="button">Essayer Maintenant</button></a>
     </div>
+    <div id="space">
+      <hr></hr>
+    </div>
     <div id="divd">
       <h1>Inscription / Connexion</h1>
-      <img src="img/geometryshapes.gif"/><br>
       <a href="#" data-toggle="modal" data-target="#login-modal"><button>Connexion/Inscription</button></a>
 
       <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
