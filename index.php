@@ -1,3 +1,6 @@
+<?php
+session_start();
+ ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -12,20 +15,30 @@
   <body>
     <div class="header">
       <h1>Shape Finder</h1>
-      <hr></hr>
+    <hr></hr>
     </div>
       <div class="containerdv">
     <div id="divg">
       <h1>Essayer Shape Finder Gratuitement!</h1>
-      <img src="img/geometryshapes.gif"/><br>
-      <a href="essayer.php"><button type="button" name="button">Essayer Maintenant</button></a>
+      <br>
+      <a href="essayer.php"><img src="img/geometryshapes.gif"/></a>
+    </div>
+    <div class="pixel">
+
     </div>
     <div id="space">
       <hr></hr>
     </div>
     <div id="divd">
       <h1>Inscription / Connexion</h1>
-      <a href="#" data-toggle="modal" data-target="#login-modal"><button>Connexion/Inscription</button></a>
+      <?php
+      if (isset($_SESSION ['login'])) {
+        echo "<a href='include/deconn.php'><img src='img/deco.png'/></a>";
+      }
+      else {
+        echo "<a href='#' data-toggle='modal' data-target='#login-modal'><img src='img/conn.png'/></a>";
+      }
+      ?>
 
       <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
           	  <div class="modal-dialog">
@@ -41,6 +54,7 @@
                 <h1>S'enregistrer</h1><br>
                 <form action="include/inscript.php" method="post">
                   <input type="text" name="login" placeholder="Nom d'utilisateur">
+                  <input type="text" name="mail" placeholder="Adresse-email">
                   <input type="password" name="pass" placeholder="Mot de passe">
                   <input type="password" name="passv" placeholder="Verif. Mot de passe">
                   <input type="submit" name="submit" class="login loginmodal-submit" value="Inscription">
