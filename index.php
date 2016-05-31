@@ -9,15 +9,13 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style/bootstrap.min.css">
   <link rel="stylesheet" href="style/stylesheet.css">
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   </head>
   <body>
     <div class="header">
       <h1>Shape Finder</h1>
-      <pre>
-        <?php print_r ($_SESSION ['login']) ?>
-      </pre>
     <hr></hr>
     </div>
       <div class="containerdv">
@@ -25,11 +23,11 @@ session_start();
           <?php
           if (isset($_SESSION ['login'])) {
             echo "<h1>Shape Finder</h1>";
-            echo "<a href='#'><img id='geoshapei' src='img/geometryshapes.gif'/></a>";
+            echo "<a href='#'><img id='geoshapei' src='img/logo.png'/></a>";
           }
           else {
             echo "<h1>Essayer Shape Finder</h1>";
-            echo "<a href='essayer.php'><img id='geoshapei' src='img/geometryshapes.gif'/></a>";
+            echo "<a href='essayer.php'><img id='geoshapei' src='img/logo.png'/></a>";
           }
           ?>
         </div>
