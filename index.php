@@ -15,32 +15,44 @@ session_start();
   <body>
     <div class="header">
       <h1>Shape Finder</h1>
+      <pre>
+        <?php print_r ($_SESSION ['login']) ?>
+      </pre>
     <hr></hr>
     </div>
       <div class="containerdv">
-    <div id="divg">
-      <h1>Essayer Shape Finder Gratuitement!</h1>
-      <br>
-      <a href="essayer.php"><img src="img/geometryshapes.gif"/></a>
-    </div>
-    <div class="pixel">
+        <div id="divg">
+          <?php
+          if (isset($_SESSION ['login'])) {
+            echo "<h1>Shape Finder</h1>";
+            echo "<a href='#'><img id='geoshapei' src='img/geometryshapes.gif'/></a>";
+          }
+          else {
+            echo "<h1>Essayer Shape Finder</h1>";
+            echo "<a href='essayer.php'><img id='geoshapei' src='img/geometryshapes.gif'/></a>";
+          }
+          ?>
+        </div>
+        <div class="pixel">
+        </div>
 
-    </div>
     <div id="space">
       <hr></hr>
     </div>
     <div id="divd">
-      <h1>Inscription / Connexion</h1>
       <?php
       if (isset($_SESSION ['login'])) {
-        echo "<a href='include/deconn.php'><img src='img/deco.png'/></a>";
+        echo "<h1>Déconnexion</h1>";
+        echo "<a href='include/deconn.php'><img id='deco' src='img/deco.png'/></a>";
       }
       else {
-        echo "<a href='#' data-toggle='modal' data-target='#login-modal'><img src='img/conn.png'/></a>";
+        echo "<h1>Inscription Connexion</h1>";
+        echo "<a href='#' data-toggle='modal' data-target='#login-modal'><img id='conni' src='img/conn.png'/></a>";
       }
       ?>
 
-      <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true" style="display: none;">
           	  <div class="modal-dialog">
       				<div class="loginmodal-container">
       					<h1>Se connecter</h1><br>
@@ -63,5 +75,6 @@ session_start();
             </div>
       			</div>
       		  </div>
+          </div>
 </body>
 </html>
