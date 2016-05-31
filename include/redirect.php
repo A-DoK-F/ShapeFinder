@@ -8,6 +8,6 @@
     <h1>Incription réussie</h1>
     <h1>Redirection dans 5 secondes</h1>
     <h6>ou cliquez <a href="cooptousfruit.php">ICI</a></h6>
-    <script>window.setTimeout("location=('../index.php');",5000)</script>
+    <script>window.setTimeout("location=('../index.php');",0)</script>
   </body>
 </html>
