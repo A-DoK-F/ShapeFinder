@@ -5,7 +5,7 @@ session_start();
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Projetjuin</title>
+    <title>Shape Finder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style/bootstrap.min.css">
   <link rel="stylesheet" href="style/stylesheet.css">

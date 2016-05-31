@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Projetjuin</title>
+    <title>Shape Finder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style/bootstrap.min.css">
     <link rel="stylesheet" href="style/stylesheet_jeu.css">
@@ -18,27 +18,24 @@
 
       	<div class="containerdv">
     		<div id="divg">
-    		<h1>Sélectionne les cercles</h1><br>
+    		<h1>Sélectionne les cercles</h1><br></br>
+        <div id="form">
+          <form method="post" action="result.php">
+            <?php $date1 = time(); ?>
+          <input type="hidden" name="date1" value="<?php echo $date1; ?>"/>
+          <table>
+            <tr>
+            <td><input type="checkbox" id="cercler" name="cercle"/><label for="cercler"> <span><img src="img/sens_interdit.png"/></span></label></td>
+              <td><input type="checkbox" id="triangle" name="triangle"/><label for="triangle"> <span><img src="img/triangle_oeil.png"/></span></label></td>
+              <td><input type="checkbox" id="triangle1" name="triangle"/><label for="triangle1"> <span><img src="img/triangle1.png"/></span></label></td>
+              </tr>
+            <table>
+              <button type="submit" name="valider">Valider</button>
+            </form>
+        </div>
 
-
-
-    		<form method="post" action="result.php">
-          <?php $date1 = time(); ?>
-        <input type="hidden" name="date1" value="<?php echo $date1; ?>"/>
-    		<table>
-   				<tr>
-    			<td><input type="checkbox" id="cercler" name="cercle"/><label for="cercler"> <span><img src="img/sens_interdit.png"/></span></label></td>
-      			<td><input type="checkbox" id="triangle" name="triangle"/><label for="triangle"> <span><img src="img/triangle_oeil.png"/></span></label></td>
-      			<td><input type="checkbox" id="triangle1" name="triangle"/><label for="triangle1"> <span><img src="img/triangle1.png"/></span></label></td>
-      			</tr>
-      		<table>
-      			<button type="submit" name="valider">Valider</button>
-      		</form>
-
-      		<div>
-
-		</div>
-
+        </div>
+      </div>
 
 
 
