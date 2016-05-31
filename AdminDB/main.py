@@ -6,10 +6,16 @@ from tkinter import *
 from tkinter.filedialog import *
 import tkinter.messagebox as tm
 
+import shutil
+
+from pathlib import Path
 
 import mysql.connector
 
-changed = False
+#changed = False
+srcfolder = "/img"
+softwarefolder = str(os.getcwd())
+
 
 conn = mysql.connector.connect(host="localhost",user="root",password="1234", database="ShapeFinder")
 cursor = conn.cursor()
@@ -18,6 +24,9 @@ class LoginFrame(Frame):
     def __init__(self, master):
         super().__init__(master)
 
+        self.filepath = ""
+        self.phototemp = object
+        self.entry_forme = object
         self.logged = False
 
         self.label_1 = Label(self, text="Compte")
@@ -57,10 +66,62 @@ class LoginFrame(Frame):
             self.logged = True
             changed = True
             tm.showinfo("Login info", "Welcome " + username + "!")
-            for widget in self.winfo_children():
-                widget.destroy()
-
+            self.clear_ui()
             self.menu_bar()
+
+    def clear_ui(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+
+    def add_image(self):
+        self.clear_ui()
+        #175x175
+        self.filepath = askopenfilename(title="Ouvrir une image: Dimension 175x175",filetypes=[('png files','.png')])
+        self.phototemp = PhotoImage(file=self.filepath)
+
+        canvaPreview = Canvas(self, width=175, height=175)
+        canvaPreview.create_image(0, 0, anchor=NW, image=self.phototemp)
+        canvaPreview.pack(side=BOTTOM, padx=5, pady=5)
+
+        Button(self, text ='Annuler', command=self.clear_ui).pack(side=LEFT, padx=5, pady=5)
+        Button(self, text ='Valider', command=self.copy_image).pack(side=RIGHT, padx=5, pady=5)
+
+        self.entry_forme = Entry(self, text="Forme", width=30)
+        self.entry_forme.pack(side = BOTTOM)
+
+
+    def copy_image(self):
+        if self.phototemp.width() < 1:
+            tm.showinfo("Erreur", "Ajout d'image Annulé")
+        elif self.phototemp.width() != 175:
+            tm.showinfo("Erreur", "Veuillez Redimensionner l'image, largeur inadéquat! (175x175)")
+            self.add_image()
+        elif self.phototemp.height() != 175:
+            tm.showinfo("Erreur", "Veuillez Redimensionner l'image, hauteur inadéquat! (175x175)")
+            self.add_image()
+        else:
+            try:
+                shutil.copy2(self.filepath,softwarefolder + srcfolder)
+                self.insert_imagedb()
+            except EnvironmentError:
+                tm.showinfo("Erreur", "La Copie de l'Image a échoué!")
+                self.clear_ui()
+            else:
+                tm.showinfo("Succès", "La Copie de l'Image a Réussi!")
+                self.clear_ui()
+
+    def insert_imagedb(self):
+        forme = self.entry_forme.get()
+        imagepath = Path(str(self.filepath))
+        req = "INSERT INTO `images` (NomImage, FormeImage) VALUES ({}, {})".format("'" + imagepath.name + "'", "'" + forme + "'")
+
+        try:
+            cursor.execute(req)
+            conn.commit()
+        except:
+            conn.rollback()
+            tm.showinfo("Erreur", "L'Enregistrement en Base de Données de l'Image a échoué!")
+
 
     def menu_bar(self):
 
@@ -83,7 +144,7 @@ class LoginFrame(Frame):
         menubar.add_cascade(label="Séances", menu=menu3)
 
         menu4 = Menu(menubar, tearoff=0)
-        menu4.add_command(label="Créer")
+        menu4.add_command(label="Ajouter", command=self.add_image)
         menu4.add_command(label="Editer")
         menu4.add_command(label="Supprimer")
         menubar.add_cascade(label="Images", menu=menu4)
@@ -128,11 +189,11 @@ if __name__ == "__main__":
     label.pack()
 
     #Photo
-    originalphoto = PhotoImage(file="src/logotest.png")
+    originalphoto = PhotoImage(file="img/logotest.png")
     resizedphoto = originalphoto.subsample(4,4)
     canvas = Canvas(acceuil,width=140, height=120)
     canvas.create_image(0, 0, anchor=NW, image=resizedphoto)
-    canvas.pack(side = TOP)
+    canvas.pack(side = BOTTOM)
 
     lf = LoginFrame(acceuil)
 
