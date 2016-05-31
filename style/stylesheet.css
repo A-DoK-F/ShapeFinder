@@ -33,7 +33,7 @@ body{
 #divg{
   float: left;
   padding-left: 5%;
-  background-color: #B9E937;
+  background-color: #ABD0CE;
   width: 65%;
   height: auto;
   text-align: center;
@@ -46,7 +46,7 @@ body{
   height: 15px;
   width: 65%;
   align-self: center;
-  background-color: #B9E937;
+  background-color: #ABD0CE;
 }
 .header{
   text-align: center;
@@ -58,7 +58,7 @@ body{
   text-align: center;
   float: right;
   padding-right: 5%;
-  background-color: #B9E937;
+  background-color: #ABD0CE;
   width: 65%;
   height: auto;
   align-self: center;
