@@ -129,7 +129,7 @@ class LoginFrame(Frame):
             conn.rollback()
             tm.showinfo("Erreur", "L'Enregistrement en Base de Données de l'Image a échoué!")
 
-    def get_imagedb(self):
+    def get_imagedb(self, action):
 
         self.clear_ui()
         req = "SELECT * FROM images"
@@ -144,9 +144,9 @@ class LoginFrame(Frame):
             if result != None:
                 resultatreq.append(result)
 
-        self.display_listdb(resultatreq)
+        self.display_listdb(resultatreq, action)
 
-    def display_listdb(self,resultatreq):
+    def display_listdb(self, resultatreq, action):
 
         self.clear_ui()
 
@@ -158,18 +158,20 @@ class LoginFrame(Frame):
 
         self.listedisplayed.pack(side=TOP)
 
-        selectbtn = Button(self, text ='Modifier', command=lambda: self.rec_modify_imagedb(self.listedisplayed))
+        selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_imagedb(self.listedisplayed, action))
         selectbtn.pack(side=TOP)
-        #self.modify_imagedb(listedisplayed)
 
-    def rec_modify_imagedb(self, listSelection):
+    def rec_modify_imagedb(self, listSelection, action):
         self.clear_ui()
 
         listTemp = listSelection.get(listSelection.curselection())
-        self.forme_image = Entry(self, text=listTemp[2], width=30)
-        self.forme_image.pack(side = TOP)
+        if action == "EditerImage":
+            self.forme_image = Entry(self, text=listTemp[2], width=30)
+            self.forme_image.pack(side = TOP)
+            selectbtn = Button(self, text ='Valider', command=lambda: self.modify_shape_imagedb(listTemp))
+        else:
+            selectbtn = Button(self, text ='Valider', command=lambda: self.sup_imagedb(listTemp))
 
-        selectbtn = Button(self, text ='Valider', command=lambda: self.modify_shape_imagedb(listTemp))
         cancelbtn = Button(self, text ='Annuler', command=self.clear_ui)
         selectbtn.pack(side=TOP)
         cancelbtn.pack(side=TOP)
@@ -184,11 +186,28 @@ class LoginFrame(Frame):
         try:
             cursor.execute(req)
             conn.commit()
+            tm.showinfo("Succès!", "L'Enregistrement en Base de Données de l'Image a réussi!")
             self.clear_ui()
             self.listedisplayed.pack_forget()
         except:
             conn.rollback()
             tm.showinfo("Erreur", "L'Enregistrement en Base de Données de l'Image a échoué!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
+
+    def sup_imagedb(self, listSelection):
+
+        req = "DELETE FROM `images` WHERE Id={}".format("'" + str(listSelection[0]) + "'", "'" + str(listSelection[1]) + "'", "'" + str(listSelection[2]) + "'")
+        try:
+            cursor.execute(req)
+            conn.commit()
+            os.remove(softwarefolder + srcfolder + "/" + listSelection[1])
+            tm.showinfo("Succès!", "La Suppression l'Image a réussi!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
+        except:
+            conn.rollback()
+            tm.showinfo("Erreur", "La Suppression l'Image a échoué!")
             self.clear_ui()
             self.listedisplayed.pack_forget()
 
@@ -214,8 +233,8 @@ class LoginFrame(Frame):
 
         menu4 = Menu(menubar, tearoff=0)
         menu4.add_command(label="Ajouter", command=self.add_image)
-        menu4.add_command(label="Editer", command=self.get_imagedb)
-        menu4.add_command(label="Supprimer")
+        menu4.add_command(label="Editer", command=lambda: self.get_imagedb("EditerImage"))
+        menu4.add_command(label="Supprimer", command=lambda: self.get_imagedb("SupprimerImage"))
         menubar.add_cascade(label="Images", menu=menu4)
 
         menu5 = Menu(menubar, tearoff=0)
