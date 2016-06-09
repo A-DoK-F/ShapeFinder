@@ -7,7 +7,7 @@ from tkinter.filedialog import *
 import tkinter.messagebox as tm
 
 import shutil
-
+from types import *
 from pathlib import Path
 
 import mysql.connector
@@ -27,6 +27,9 @@ class LoginFrame(Frame):
         self.filepath = ""
         self.phototemp = object
         self.entry_forme = object
+        self.forme_image = ""
+        self.listedisplayed = list()
+
         self.logged = False
 
         self.label_1 = Label(self, text="Compte")
@@ -101,7 +104,7 @@ class LoginFrame(Frame):
             self.add_image()
         else:
             try:
-                shutil.copy2(self.filepath,softwarefolder + srcfolder)
+                shutil.copy2(self.filepath, softwarefolder + srcfolder)
                 self.insert_imagedb()
             except EnvironmentError:
                 tm.showinfo("Erreur", "La Copie de l'Image a échoué!")
@@ -112,8 +115,12 @@ class LoginFrame(Frame):
 
     def insert_imagedb(self):
         forme = self.entry_forme.get()
-        imagepath = Path(str(self.filepath))
-        req = "INSERT INTO `images` (NomImage, FormeImage) VALUES ({}, {})".format("'" + imagepath.name + "'", "'" + forme + "'")
+        if forme == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        else:
+            imagepath = Path(str(self.filepath))
+            req = "INSERT INTO `images` (NomImage, FormeImage) VALUES ({}, {})".format("'" + imagepath.name + "'", "'" + forme + "'")
+
 
         try:
             cursor.execute(req)
@@ -122,6 +129,68 @@ class LoginFrame(Frame):
             conn.rollback()
             tm.showinfo("Erreur", "L'Enregistrement en Base de Données de l'Image a échoué!")
 
+    def get_imagedb(self):
+
+        self.clear_ui()
+        req = "SELECT * FROM images"
+
+        cursor.execute(req)
+        result = 0
+        compteur = 0
+        resultatreq = list()
+
+        while result != None:
+            result = cursor.fetchone()
+            if result != None:
+                resultatreq.append(result)
+
+        self.display_listdb(resultatreq)
+
+    def display_listdb(self,resultatreq):
+
+        self.clear_ui()
+
+        self.listedisplayed = Listbox(acceuil)
+
+
+        for i in range(0,len(resultatreq)):
+            self.listedisplayed.insert(i, resultatreq[i])
+
+        self.listedisplayed.pack(side=TOP)
+
+        selectbtn = Button(self, text ='Modifier', command=lambda: self.rec_modify_imagedb(self.listedisplayed))
+        selectbtn.pack(side=TOP)
+        #self.modify_imagedb(listedisplayed)
+
+    def rec_modify_imagedb(self, listSelection):
+        self.clear_ui()
+
+        listTemp = listSelection.get(listSelection.curselection())
+        self.forme_image = Entry(self, text=listTemp[2], width=30)
+        self.forme_image.pack(side = TOP)
+
+        selectbtn = Button(self, text ='Valider', command=lambda: self.modify_shape_imagedb(listTemp))
+        cancelbtn = Button(self, text ='Annuler', command=self.clear_ui)
+        selectbtn.pack(side=TOP)
+        cancelbtn.pack(side=TOP)
+
+    def modify_shape_imagedb(self, listSelection):
+
+        forme = self.forme_image.get()
+        if forme == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        else:
+            req = "UPDATE `images` SET FormeImage={} WHERE Id={}".format("'" + forme + "'", "'" + str(listSelection[0]) + "'")
+        try:
+            cursor.execute(req)
+            conn.commit()
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
+        except:
+            conn.rollback()
+            tm.showinfo("Erreur", "L'Enregistrement en Base de Données de l'Image a échoué!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
 
     def menu_bar(self):
 
@@ -145,7 +214,7 @@ class LoginFrame(Frame):
 
         menu4 = Menu(menubar, tearoff=0)
         menu4.add_command(label="Ajouter", command=self.add_image)
-        menu4.add_command(label="Editer")
+        menu4.add_command(label="Editer", command=self.get_imagedb)
         menu4.add_command(label="Supprimer")
         menubar.add_cascade(label="Images", menu=menu4)
 
