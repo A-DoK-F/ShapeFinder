@@ -42,6 +42,11 @@ class LoginFrame(Frame):
         self.label_street = Label(self, text="Rue")
         self.label_zip = Label(self, text="Code Postal")
         self.label_city = Label(self, text="Ville")
+        self.label_phone1 = Label(self, text="Tel.")
+        self.label_phone2 = Label(self, text="Tel.Mobile")
+        self.label_title = Label(self, text="Titre")
+        self.label_payment = Label(self, text="Paiement")
+
 
         self.temp_label = ""
         self.temp_entry = ""
@@ -54,6 +59,10 @@ class LoginFrame(Frame):
         self.entry_street = Entry(self)
         self.entry_zip = Entry(self)
         self.entry_city = Entry(self)
+        self.entry_phone1 = Entry(self)
+        self.entry_phone2 = Entry(self)
+        self.entry_title = Entry(self)
+        self.entry_payment = Entry(self)
 
         self.label_cmpt.grid(row=0, sticky=E)
         self.label_pwd.grid(row=1, sticky=E)
@@ -110,7 +119,7 @@ class LoginFrame(Frame):
         self.entry_forme = Entry(self, text="Forme", width=30)
         self.entry_forme.pack(side = BOTTOM)
 
-    def add_superuser(self):
+    def add_user(self, usertype):
         self.clear_ui()
 
         self.label_cmpt = Label(self, text="Compte")
@@ -122,6 +131,13 @@ class LoginFrame(Frame):
         self.label_zip = Label(self, text="Code Postal")
         self.label_city = Label(self, text="Ville")
 
+        if usertype == "Normal":
+            self.label_phone1 = Label(self, text="Tel.")
+            self.label_phone2 = Label(self, text="Tel.Mobile")
+            self.label_title = Label(self, text="Titre")
+            self.label_payment = Label(self, text="Ville")
+
+
         self.entry_cmpt = Entry(self)
         self.entry_pwd = Entry(self, show='*')
         self.entry_name = Entry(self)
@@ -130,6 +146,12 @@ class LoginFrame(Frame):
         self.entry_street = Entry(self)
         self.entry_zip = Entry(self)
         self.entry_city = Entry(self)
+
+        if usertype == "Normal":
+            self.entry_phone1 = Entry(self)
+            self.entry_phone2 = Entry(self)
+            self.entry_title = Entry(self)
+            self.entry_payment = Entry(self)
 
         self.label_cmpt.grid(row=0, sticky=E)
         self.label_pwd.grid(row=1, sticky=E)
@@ -148,12 +170,23 @@ class LoginFrame(Frame):
         self.entry_zip.grid(row=6, column=1)
         self.entry_city.grid(row=7, column=1)
 
-        validbutn = Button(self, text ='Valider',command= self.add_superuserdb)
-        validbutn.grid(row=8, column=1)
+        if usertype == "Normal":
+            self.label_phone1.grid(row=8,stick=E)
+            self.label_phone2.grid(row=9,stick=E)
+            self.label_title.grid(row=10,stick=E)
+            self.label_payment.grid(row=11,stick=E)
+            self.entry_phone1.grid(row=8,column=1)
+            self.entry_phone2.grid(row=9,column=1)
+            self.entry_title.grid(row=10,column=1)
+            self.entry_payment.grid(row=11,column=1)
+
+
+        validbutn = Button(self, text ='Valider',command=lambda: self.add_userdb(usertype))
+        validbutn.grid(row=12, column=1)
 
         self.pack()
 
-    def add_superuserdb(self):
+    def add_userdb(self, usertype):
         compte = self.entry_cmpt.get()
         mdp = self.entry_pwd.get()
         nom = self.entry_name.get()
@@ -163,25 +196,38 @@ class LoginFrame(Frame):
         code = self.entry_zip.get()
         ville = self.entry_city.get()
 
-        if compte == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif mdp == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif nom == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif prenom == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif mail == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif rue == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif code == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
-        elif ville == "":
-            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        if usertype == "Normal":
+            phone_fix = self.entry_phone1.get()
+            phone_mobile = self.entry_phone2.get()
+            titre = self.entry_title.get()
+            payer = self.entry_payment.get()
+
+        if usertype == "Admin":
+            tabledb = "compte_admin"
         else:
-            imagepath = Path(str(self.filepath))
-            req = "INSERT INTO `compte_admin` (name, firstname, email, street, zip, city, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {})".format("'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + compte + "'", "'" + mdp + "'")
+            tabledb = "customer"
+
+        if compte == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué un Nom de Compte")
+        elif mdp == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué un Mot de Passe")
+        elif nom == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué un Nom de Famille")
+        elif prenom == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué un votre Prénom")
+        elif mail == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Addresse E-mail")
+        elif rue == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué Votre Rue")
+        elif code == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué Votre Code Postale")
+        elif ville == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué Votre Ville")
+        else:
+            if usertype == "Normal":
+                req = "INSERT INTO {} (name, firstname, email, street, zip, city, phone1, phone2, title, payment, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + phone_fix + "'","'" + phone_mobile + "'","'" + titre + "'","'" + payer + "'", "'" + compte + "'", "'" + mdp + "'")
+            else:
+                req = "INSERT INTO {} (name, firstname, email, street, zip, city, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + compte + "'", "'" + mdp + "'")
             print(req)
         try:
             cursor.execute(req)
@@ -430,13 +476,13 @@ class LoginFrame(Frame):
     def menu_bar(self):
 
         menu8 = Menu(menubar, tearoff=0)
-        menu8.add_command(label="Créer", command= self.add_superuser)
+        menu8.add_command(label="Créer", command=lambda: self.add_user("Admin"))
         menu8.add_command(label="Editer", command=lambda: self.get_superuserdb("EditerSuperUser"))
         menu8.add_command(label="Supprimer")
         menubar.add_cascade(label="Administrateurs", menu=menu8)
 
         menu2 = Menu(menubar, tearoff=0)
-        menu2.add_command(label="Créer")
+        menu2.add_command(label="Créer", command=lambda: self.add_user("Normal"))
         menu2.add_command(label="Editer")
         menu2.add_command(label="Supprimer")
         menubar.add_cascade(label="Utilisateurs", menu=menu2)
