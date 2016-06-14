@@ -28,20 +28,37 @@ class LoginFrame(Frame):
         self.phototemp = object
         self.entry_forme = object
         self.forme_image = ""
-        self.listedisplayed = list()
+        self.action = ""
+        self.listedisplayed = Listbox(acceuil)
+        self.SuperUserDBFlag = 1
 
         self.logged = False
 
-        self.label_1 = Label(self, text="Compte")
-        self.label_2 = Label(self, text="MotDePasse")
+        self.label_cmpt = Label(self, text="Compte")
+        self.label_pwd = Label(self, text="MotDePasse")
+        self.label_name = Label(self, text="Nom")
+        self.label_firstname = Label(self, text="Prenom")
+        self.label_email = Label(self, text="Email")
+        self.label_street = Label(self, text="Rue")
+        self.label_zip = Label(self, text="Code Postal")
+        self.label_city = Label(self, text="Ville")
 
-        self.entry_1 = Entry(self)
-        self.entry_2 = Entry(self, show="*")
+        self.temp_label = ""
+        self.temp_entry = ""
 
-        self.label_1.grid(row=0, sticky=E)
-        self.label_2.grid(row=1, sticky=E)
-        self.entry_1.grid(row=0, column=1)
-        self.entry_2.grid(row=1, column=1)
+        self.entry_cmpt = Entry(self)
+        self.entry_pwd = Entry(self, show='*')
+        self.entry_name = Entry(self)
+        self.entry_firstname = Entry(self)
+        self.entry_email = Entry(self)
+        self.entry_street = Entry(self)
+        self.entry_zip = Entry(self)
+        self.entry_city = Entry(self)
+
+        self.label_cmpt.grid(row=0, sticky=E)
+        self.label_pwd.grid(row=1, sticky=E)
+        self.entry_cmpt.grid(row=0, column=1)
+        self.entry_pwd.grid(row=1, column=1)
 
         self.logbtn = Button(self, text="Login", command = self._login_btn_clickked)
         self.logbtn.grid(columnspan=2)
@@ -51,8 +68,8 @@ class LoginFrame(Frame):
     def _login_btn_clickked(self):
         #print("Clicked")
         global changed
-        username = self.entry_1.get()
-        password = self.entry_2.get()
+        username = self.entry_cmpt.get()
+        password = self.entry_pwd.get()
 
         req = "SELECT * FROM compte_admin WHERE login={} AND password={}".format("'" + username + "'", "'" + password + "'")
         #labelcon = Label(acceuil, text=str(req))
@@ -75,6 +92,7 @@ class LoginFrame(Frame):
     def clear_ui(self):
         for widget in self.winfo_children():
             widget.destroy()
+        self.listedisplayed.pack_forget()
 
     def add_image(self):
         self.clear_ui()
@@ -129,8 +147,9 @@ class LoginFrame(Frame):
             conn.rollback()
             tm.showinfo("Erreur", "L'Enregistrement en Base de Données de l'Image a échoué!")
 
-    def get_imagedb(self, action):
+    def get_imagedb(self, actiondb = "youpi"):
 
+        self.action = actiondb
         self.clear_ui()
         req = "SELECT * FROM images"
 
@@ -144,28 +163,141 @@ class LoginFrame(Frame):
             if result != None:
                 resultatreq.append(result)
 
-        self.display_listdb(resultatreq, action)
+        self.display_listdb(resultatreq)
 
-    def display_listdb(self, resultatreq, action):
+    def get_superuserdb(self, actiondb = "youpi"):
+
+        self.action = actiondb
+        self.clear_ui()
+        req = "SELECT * FROM compte_admin"
+
+        cursor.execute(req)
+        result = 0
+        compteur = 0
+        resultatreq = list()
+
+        while result != None:
+            result = cursor.fetchone()
+            if result != None:
+                resultatreq.append(result)
+
+        self.display_listdb(resultatreq)
+
+
+    def display_listdb(self, resultatreq):
 
         self.clear_ui()
-
-        self.listedisplayed = Listbox(acceuil)
-
 
         for i in range(0,len(resultatreq)):
             self.listedisplayed.insert(i, resultatreq[i])
 
         self.listedisplayed.pack(side=TOP)
-
-        selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_imagedb(self.listedisplayed, action))
+        if self.action == "EditerSuperUser":
+            selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
+        else:
+            selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_imagedb(self.listedisplayed))
         selectbtn.pack(side=TOP)
 
-    def rec_modify_imagedb(self, listSelection, action):
+    def rec_modify_superuserdb(self, listSelection):
         self.clear_ui()
 
         listTemp = listSelection.get(listSelection.curselection())
-        if action == "EditerImage":
+
+        if self.action == "EditerSuperUser":
+
+            self.label_cmpt = Label(self, text="Compte")
+            self.label_pwd = Label(self, text="MotDePasse")
+            self.label_name = Label(self, text="Nom")
+            self.label_firstname = Label(self, text="Prenom")
+            self.label_email = Label(self, text="Email")
+            self.label_street = Label(self, text="Rue")
+            self.label_zip = Label(self, text="Code Postal")
+            self.label_city = Label(self, text="Ville")
+
+            modify_cmpt = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("login", listTemp))
+            modify_pwd = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("password", listTemp))
+            modify_name = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("name", listTemp))
+            modify_firstname = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("firstname", listTemp))
+            modify_email = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("email", listTemp))
+            modify_street = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("street", listTemp))
+            modify_zip = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("zip", listTemp))
+            modify_city = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("city", listTemp))
+
+            self.label_cmpt.grid(row=0, sticky=E)
+            self.label_pwd.grid(row=1, sticky=E)
+            modify_cmpt.grid(row=0, column=1)
+            modify_pwd.grid(row=1, column=1)
+            self.label_name.grid(row=2, sticky=E)
+            self.label_firstname.grid(row=3, sticky=E)
+            modify_name.grid(row=2, column=1)
+            modify_firstname.grid(row=3, column=1)
+            self.label_email.grid(row=4, sticky=E)
+            self.label_street.grid(row=5, sticky=E)
+            modify_email.grid(row=4, column=1)
+            modify_street.grid(row=5, column=1)
+            self.label_zip.grid(row=6, sticky=E)
+            self.label_city.grid(row=7, sticky=E)
+            modify_zip.grid(row=6, column=1)
+            modify_city.grid(row=7, column=1)
+
+
+            cancelbtn = Button(self, text ='Terminer', command=self.clear_ui)
+            cancelbtn.grid(row=8, sticky=N)
+
+        else:
+            pass
+
+        self.pack()
+
+    def modify_field_superuserdb(self, champ, listTemp):
+        self.clear_ui()
+
+        self.temp_label = Label(self, text=champ)
+
+        if champ == "Password":
+            self.temp_entry = Entry(self, show="*")
+        else:
+            self.temp_entry = Entry(self)
+
+        self.temp_label.grid(row=0, sticky=E)
+        self.temp_entry.grid(row=0, column=1)
+
+        selectbtn = Button(self, text ='Valider', command=lambda: self.modify_info_superuserdb(champ, listTemp))
+        cancelbtn = Button(self, text ='Annuler', command=self.clear_ui)
+        cancelbtn.grid(row=2, sticky=E)
+        selectbtn.grid(row=2, column=1)
+
+        self.pack()
+
+
+
+    def modify_info_superuserdb(self, champ, listSelection):
+
+        variable = self.temp_entry.get()
+        print(champ)
+        print(variable)
+        if variable == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué la Nouvelle Valeur")
+        else:
+            req = "UPDATE `compte_admin` SET {}={} WHERE idcompte_admin={}".format( champ, "'" + variable + "'","'" + str(listSelection[0]) + "'")
+        try:
+            cursor.execute(req)
+            conn.commit()
+            tm.showinfo("Succès!", "La mise a jour en Base de Données a réussi!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
+        except:
+            conn.rollback()
+            tm.showinfo("Erreur", "La mise a jour en Base de Données a échoué!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
+
+
+    def rec_modify_imagedb(self, listSelection):
+        self.clear_ui()
+
+        listTemp = listSelection.get(listSelection.curselection())
+        if self.action == "EditerImage":
             self.forme_image = Entry(self, text=listTemp[2], width=30)
             self.forme_image.pack(side = TOP)
             selectbtn = Button(self, text ='Valider', command=lambda: self.modify_shape_imagedb(listTemp))
@@ -215,7 +347,7 @@ class LoginFrame(Frame):
 
         menu8 = Menu(menubar, tearoff=0)
         menu8.add_command(label="Créer")
-        menu8.add_command(label="Editer")
+        menu8.add_command(label="Editer", command=lambda: self.get_superuserdb("EditerSuperUser"))
         menu8.add_command(label="Supprimer")
         menubar.add_cascade(label="Administrateurs", menu=menu8)
 
