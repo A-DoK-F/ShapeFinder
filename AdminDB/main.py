@@ -110,6 +110,90 @@ class LoginFrame(Frame):
         self.entry_forme = Entry(self, text="Forme", width=30)
         self.entry_forme.pack(side = BOTTOM)
 
+    def add_superuser(self):
+        self.clear_ui()
+
+        self.label_cmpt = Label(self, text="Compte")
+        self.label_pwd = Label(self, text="MotDePasse")
+        self.label_name = Label(self, text="Nom")
+        self.label_firstname = Label(self, text="Prenom")
+        self.label_email = Label(self, text="Email")
+        self.label_street = Label(self, text="Rue")
+        self.label_zip = Label(self, text="Code Postal")
+        self.label_city = Label(self, text="Ville")
+
+        self.entry_cmpt = Entry(self)
+        self.entry_pwd = Entry(self, show='*')
+        self.entry_name = Entry(self)
+        self.entry_firstname = Entry(self)
+        self.entry_email = Entry(self)
+        self.entry_street = Entry(self)
+        self.entry_zip = Entry(self)
+        self.entry_city = Entry(self)
+
+        self.label_cmpt.grid(row=0, sticky=E)
+        self.label_pwd.grid(row=1, sticky=E)
+        self.entry_cmpt.grid(row=0, column=1)
+        self.entry_pwd.grid(row=1, column=1)
+        self.label_name.grid(row=2, sticky=E)
+        self.label_firstname.grid(row=3, sticky=E)
+        self.entry_name.grid(row=2, column=1)
+        self.entry_firstname.grid(row=3, column=1)
+        self.label_email.grid(row=4, sticky=E)
+        self.label_street.grid(row=5, sticky=E)
+        self.entry_email.grid(row=4, column=1)
+        self.entry_street.grid(row=5, column=1)
+        self.label_zip.grid(row=6, sticky=E)
+        self.label_city.grid(row=7, sticky=E)
+        self.entry_zip.grid(row=6, column=1)
+        self.entry_city.grid(row=7, column=1)
+
+        validbutn = Button(self, text ='Valider',command= self.add_superuserdb)
+        validbutn.grid(row=8, column=1)
+
+        self.pack()
+
+    def add_superuserdb(self):
+        compte = self.entry_cmpt.get()
+        mdp = self.entry_pwd.get()
+        nom = self.entry_name.get()
+        prenom = self.entry_firstname.get()
+        mail = self.entry_email.get()
+        rue = self.entry_street.get()
+        code = self.entry_zip.get()
+        ville = self.entry_city.get()
+
+        if compte == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif mdp == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif nom == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif prenom == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif mail == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif rue == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif code == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        elif ville == "":
+            tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
+        else:
+            imagepath = Path(str(self.filepath))
+            req = "INSERT INTO `compte_admin` (name, firstname, email, street, zip, city, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {})".format("'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + compte + "'", "'" + mdp + "'")
+            print(req)
+        try:
+            cursor.execute(req)
+            conn.commit()
+            tm.showinfo("Succès!", "L'Enregistrement en Base de Données du Compte a réussi!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
+        except:
+            conn.rollback()
+            tm.showinfo("Erreur", "L'Enregistrement en Base de Données du Compte a échoué!")
+            self.clear_ui()
+            self.listedisplayed.pack_forget()
 
     def copy_image(self):
         if self.phototemp.width() < 1:
@@ -346,7 +430,7 @@ class LoginFrame(Frame):
     def menu_bar(self):
 
         menu8 = Menu(menubar, tearoff=0)
-        menu8.add_command(label="Créer")
+        menu8.add_command(label="Créer", command= self.add_superuser)
         menu8.add_command(label="Editer", command=lambda: self.get_superuserdb("EditerSuperUser"))
         menu8.add_command(label="Supprimer")
         menubar.add_cascade(label="Administrateurs", menu=menu8)
