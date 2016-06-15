@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <?php
  include_once 'connbdd.php';
 	mysql_select_db($nom_base_donnees, $conn);
