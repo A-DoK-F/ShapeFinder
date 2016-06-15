@@ -267,7 +267,7 @@ class LoginFrame(Frame):
             tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
         else:
             imagepath = Path(str(self.filepath))
-            req = "INSERT INTO `images` (NomImage, FormeImage) VALUES ({}, {})".format("'" + imagepath.name + "'", "'" + forme + "'")
+            req = "INSERT INTO `img` (NomImage, FormeImage) VALUES ({}, {})".format("'" + imagepath.name + "'", "'" + forme + "'")
 
 
         try:
@@ -281,7 +281,7 @@ class LoginFrame(Frame):
 
         self.action = actiondb
         self.clear_ui()
-        req = "SELECT * FROM images"
+        req = "SELECT * FROM img"
 
         cursor.execute(req)
         result = 0
