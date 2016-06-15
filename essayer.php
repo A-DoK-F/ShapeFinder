@@ -2,29 +2,42 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Projetjuin</title>
+    <title>Shape Finder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  	<link rel="stylesheet" href="style/stylesheet_jeu.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style/bootstrap.min.css">
+    <link rel="stylesheet" href="style/stylesheet_jeu.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
   	</head>
 
   	<body>
     	<div class="header">
       	<h1>Shape Finder</h1>
-      	<hr></hr>
-   		</div>
-      
+      </div>
+
       	<div class="containerdv">
     		<div id="divg">
-      			<h1>Trouve les cercles</h1><br>
-      			<img src="img/carre.jpg" name="carre"/><br>
-      			<img src="img/cercle.jpg" name="cercle"/><br>
-      			<a href="result.php"><button type="button" name="button">Valider</button></a>
-    		</div>
-    		<div id="divd">
-      		</div>
-      	</div>
+    		<h1>Sélectionne les cercles</h1><br></br>
+        <div id="form">
+          <form method="post" action="result.php">
+            <?php $date1 = time(); ?>
+          <input type="hidden" name="date1" value="<?php echo $date1; ?>"/>
+          <table>
+            <tr>
+            <td><input type="checkbox" id="cercler" name="cercle"/><label for="cercler"> <span><img src="img/sens_interdit.png"/></span></label></td>
+              <td><input type="checkbox" id="triangle" name="triangle"/><label for="triangle"> <span><img src="img/triangle_oeil.png"/></span></label></td>
+              <td><input type="checkbox" id="triangle1" name="triangle"/><label for="triangle1"> <span><img src="img/triangle1.png"/></span></label></td>
+              </tr>
+            <table>
+              <button type="submit" name="valider">Valider</button>
+            </form>
+        </div>
+
+        </div>
+      </div>
+
+
+
     </body>
 </html>
