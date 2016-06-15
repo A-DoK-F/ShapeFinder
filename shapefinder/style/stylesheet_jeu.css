@@ -1,0 +1,135 @@
+
+/*input[type="checkbox"] {
+    display: none;
+}
+
+label {
+  cursor: pointer;
+  color: #555;
+}
+
+input[type="checkbox"] + label span {
+    display: inline-block;
+    vertical-align: middle;
+    width: 245px;
+    height: 245px;
+    background: url(http://localhost/shapefinder/img/cercle_bleu.png) 0px center no-repeat;
+}
+
+
+input[type="checkbox"]:checked + label span {
+    background: url(http://localhost/shapefinder/img/cercle_bleu_2.png) -1px center no-repeat;
+}*/
+
+
+#centerh1{
+  text-align: center;
+}
+#centerp{
+  text-align: center;
+}
+
+.containerdv{
+  display: flex;
+  justify-content: center;
+}
+
+#divg{
+  display: flex;
+  justify-content: center;
+  padding: 5%;
+  background-color: #d2d4dc;
+  width: 90%;
+  height: auto;
+
+}
+#footer{
+  width: 100%;
+  height: auto;
+  background-color: #d9c7dc;
+  float: left;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+/*body {
+  color: #435757;
+  background: radial-gradient(#fff, #8DD7F7);
+  font: 1.4em/1 'Noto Sans', sans-serif;
+}*/
+
+h1 {
+  text-align: center;
+}
+
+.container {
+  display : flex;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#divg {
+  display: flex;
+  justify-content: ce
+
+}
+
+input {
+  position: absolute;
+  left: -9999px;
+}
+
+label {
+  margin: 5px;
+  padding: 5px 5px 5px 5px;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  /*color: #fff;*/
+  /*background-color: #d2d9de;*/
+  box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  /*transition: background-color .2s, box-shadow .2s;*/
+}
+
+/*label::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 10px;
+  width: 32px;
+  border: 3px solid #fff;
+  border-radius: 100px;
+  transition: background-color .2s;
+}*/
+
+label:first-of-type {
+  transform: translateX(-40px);
+}
+
+label:last-of-type {
+  transform: translateX(40px);
+}
+
+label:hover, input:focus + label {
+  box-shadow: 0 0 20px rgba(0, 0, 0, .6);
+}
+
+input:checked + label {
+  background-color: #FFFFA3;
+}
+
+/*input:checked + label::before {
+  background-color: #fff;
+}*/
