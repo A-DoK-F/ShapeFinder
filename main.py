@@ -539,7 +539,7 @@ if __name__ == "__main__":
     label.pack()
 
     #Photo
-    originalphoto = PhotoImage(file="img/logotest.png")
+    originalphoto = PhotoImage(file="img/logo.png")
     resizedphoto = originalphoto.subsample(4,4)
     canvas = Canvas(acceuil,width=140, height=120)
     canvas.create_image(0, 0, anchor=NW, image=resizedphoto)
