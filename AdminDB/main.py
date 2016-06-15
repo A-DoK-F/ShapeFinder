@@ -17,7 +17,7 @@ srcfolder = "/img"
 softwarefolder = str(os.getcwd())
 
 
-conn = mysql.connector.connect(host="localhost",user="root",password="1234", database="ShapeFinder")
+conn = mysql.connector.connect(host='94.76.204.85',user="alex_",password="alex_", database="ShapeFinder")
 cursor = conn.cursor()
 
 class LoginFrame(Frame):
