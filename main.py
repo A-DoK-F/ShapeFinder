@@ -105,6 +105,8 @@ class LoginFrame(Frame):
         for widget in self.winfo_children():
             widget.destroy()
         self.listedisplayed.pack_forget()
+    def delete_list(self):
+        self.listedisplayed.delete(0, END)
 
     def add_image(self):
         self.clear_ui()
@@ -320,12 +322,13 @@ class LoginFrame(Frame):
     def display_listdb(self, resultatreq):
 
         self.clear_ui()
+        self.delete_list()
 
         for i in range(0,len(resultatreq)):
             self.listedisplayed.insert(i, resultatreq[i])
 
         self.scrollbar.pack(side= RIGHT,fill=Y)
-        self.listedisplayed.pack(side=TOP, fill = BOTH)
+        self.listedisplayed.pack(side=TOP,expand=1, fill = BOTH)
 
         if self.action == "EditerSuperUser":
             selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
