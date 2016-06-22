@@ -31,6 +31,7 @@ class LoginFrame(Frame):
         self.action = ""
         self.scrollbar = Scrollbar(acceuil)
         self.SuperUserCount = 0
+        self.tabledb = ""
         self.listedisplayed = Listbox(acceuil, yscrollcommand = self.scrollbar.set)
         self.scrollbar.config( command = self.listedisplayed.yview )
 
@@ -223,9 +224,9 @@ class LoginFrame(Frame):
             payer = self.entry_payment.get()
 
         if usertype == "Admin":
-            tabledb = "compte_admin"
+            self.tabledb = "compte_admin"
         else:
-            tabledb = "customer"
+            self.tabledb = "customer"
 
         if compte == "":
             tm.showinfo("Erreur", "Veuillez Indiqué un Nom de Compte")
@@ -245,12 +246,12 @@ class LoginFrame(Frame):
             tm.showinfo("Erreur", "Veuillez Indiqué Votre Ville")
         else:
             if usertype == "Normal":
-                req = "INSERT INTO {} (name, firstname, email, street, zip, city, phone1, phone2, title, payment, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'",
+                req = "INSERT INTO {} (name, firstname, email, street, zip, city, phone1, phone2, title, payment, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {}, {} ,{} , {}, {})".format(self.tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'",
                                                                                                                                                                                                      "'" + code + "'", "'" + ville + "'", "'" + phone_fix + "'","'" + phone_mobile + "'",
                                                                                                                                                                                                      "'" + titre + "'","'" + payer + "'", "'" + compte + "'", "'" + mdp + "'")
             else:
-                req = "INSERT INTO {} (name, firstname, email, street, zip, city, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + compte + "'", "'" + mdp + "'")
-            print(req)
+                req = "INSERT INTO {} (name, firstname, email, street, zip, city, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {})".format(self.tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + compte + "'", "'" + mdp + "'")
+
         try:
             cursor.execute(req)
             conn.commit()
@@ -317,12 +318,17 @@ class LoginFrame(Frame):
 
         self.display_listdb(resultatreq)
 
-    def get_superuserdb(self, actiondb = "youpi"):
+    def get_userdb(self, actiondb = "youpi"):
 
         self.action = actiondb
         self.clear_ui()
-        req = "SELECT * FROM compte_admin"
 
+        if self.action == "EditerSuperUser" or self.action == "SupprimerSuperUser":
+            self.tabledb = "compte_admin"
+        elif self.action == "EditerUser" or self.action == "SupprimerUser":
+            self.tabledb = "customer"
+
+        req = "SELECT * FROM {}".format(self.tabledb)
         cursor.execute(req)
         result = 0
         compteur = 0
@@ -340,27 +346,27 @@ class LoginFrame(Frame):
 
         self.clear_ui()
         self.delete_list()
-        print(self.SuperUserCount)
+
         for i in range(0,len(resultatreq)):
             self.listedisplayed.insert(i, resultatreq[i])
 
         self.scrollbar.pack(side= RIGHT,fill=Y)
         self.listedisplayed.pack(side=TOP,expand=1, fill = BOTH)
 
-        if self.action == "EditerSuperUser":
-            selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
-        if self.action == "SupprimerSuperUser":
-            selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
+        if self.action == "EditerSuperUser" or self.action == "EditerUser":
+            selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_userdb(self.listedisplayed))
+        elif self.action == "SupprimerSuperUser" or self.action == "SupprimerUser":
+            selectbtn = Button(self, text ='Selectionner', command=lambda: self.sup_userdb(self.listedisplayed))
         else:
             selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_imagedb(self.listedisplayed))
         selectbtn.pack(side=TOP)
 
-    def rec_modify_superuserdb(self, listSelection):
+    def rec_modify_userdb(self, listSelection):
         self.clear_ui()
 
         listTemp = listSelection.get(listSelection.curselection())
 
-        if self.action == "EditerSuperUser":
+        if self.action == "EditerSuperUser" or self.action == "EditerUser":
 
             self.label_cmpt = Label(self, text="Compte")
             self.label_pwd = Label(self, text="MotDePasse")
@@ -371,14 +377,26 @@ class LoginFrame(Frame):
             self.label_zip = Label(self, text="Code Postal")
             self.label_city = Label(self, text="Ville")
 
-            modify_cmpt = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("login", listTemp))
-            modify_pwd = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("password", listTemp))
-            modify_name = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("name", listTemp))
-            modify_firstname = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("firstname", listTemp))
-            modify_email = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("email", listTemp))
-            modify_street = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("street", listTemp))
-            modify_zip = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("zip", listTemp))
-            modify_city = Button(self, text ='Modifier', command=lambda: self.modify_field_superuserdb("city", listTemp))
+            if self.action == "EditerUser":
+                self.label_phone1 = Label(self, text="Tel.")
+                self.label_phone2 = Label(self, text="Tel.Mobile")
+                self.label_title = Label(self, text="Titre")
+                self.label_payment = Label(self, text="Ville")
+
+            modify_cmpt = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("login", listTemp))
+            modify_pwd = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("password", listTemp))
+            modify_name = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("name", listTemp))
+            modify_firstname = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("firstname", listTemp))
+            modify_email = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("email", listTemp))
+            modify_street = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("street", listTemp))
+            modify_zip = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("zip", listTemp))
+            modify_city = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("city", listTemp))
+
+            if self.action == "EditerUser":
+                modify_phone1 = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("phone1", listTemp))
+                modify_phone2 = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("phone2", listTemp))
+                modify_title = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("title", listTemp))
+                modify_payment = Button(self, text ='Modifier', command=lambda: self.modify_field_userdb("payment", listTemp))
 
             self.label_cmpt.grid(row=0, sticky=E)
             self.label_pwd.grid(row=1, sticky=E)
@@ -397,9 +415,19 @@ class LoginFrame(Frame):
             modify_zip.grid(row=6, column=1)
             modify_city.grid(row=7, column=1)
 
+            if self.action == "EditerUser":
+                self.label_phone1.grid(row=8, sticky=E)
+                self.label_phone2.grid(row=9, sticky=E)
+                modify_phone1.grid(row=8, column=1)
+                modify_phone2.grid(row=9, column=1)
+                self.label_title.grid(row=10, sticky=E)
+                self.label_payment.grid(row=11, sticky=E)
+                modify_title.grid(row=10, column=1)
+                modify_payment.grid(row=11, column=1)
+
 
             cancelbtn = Button(self, text ='Terminer', command=self.clear_ui)
-            cancelbtn.grid(row=8, sticky=N)
+            cancelbtn.grid(row=12, sticky=N)
 
         elif self.action == "SupprimerSuperUser":
             self.sup_superuserdb(listTemp)
@@ -408,7 +436,7 @@ class LoginFrame(Frame):
 
         self.pack()
 
-    def modify_field_superuserdb(self, champ, listTemp):
+    def modify_field_userdb(self, champ, listTemp):
         self.clear_ui()
 
         self.temp_label = Label(self, text=champ)
@@ -421,7 +449,7 @@ class LoginFrame(Frame):
         self.temp_label.grid(row=0, sticky=E)
         self.temp_entry.grid(row=0, column=1)
 
-        selectbtn = Button(self, text ='Valider', command=lambda: self.modify_info_superuserdb(champ, listTemp))
+        selectbtn = Button(self, text ='Valider', command=lambda: self.modify_info_userdb(champ, listTemp))
         cancelbtn = Button(self, text ='Annuler', command=self.clear_ui)
         cancelbtn.grid(row=2, sticky=E)
         selectbtn.grid(row=2, column=1)
@@ -430,14 +458,16 @@ class LoginFrame(Frame):
 
 
 
-    def modify_info_superuserdb(self, champ, listSelection):
+    def modify_info_userdb(self, champ, listSelection):
 
         variable = self.temp_entry.get()
 
         if variable == "":
             tm.showinfo("Erreur", "Veuillez Indiqué la Nouvelle Valeur")
-        else:
+        elif self.action == "EditerSuperUser":
             req = "UPDATE `compte_admin` SET {}={} WHERE idcompte_admin={}".format( champ, "'" + variable + "'","'" + str(listSelection[0]) + "'")
+        elif self.action == "EditerUser":
+            req = "UPDATE `customer` SET {}={} WHERE IdCustomer={}".format( champ, "'" + variable + "'","'" + str(listSelection[0]) + "'")
         try:
             cursor.execute(req)
             conn.commit()
@@ -501,37 +531,58 @@ class LoginFrame(Frame):
             self.clear_ui()
             self.listedisplayed.pack_forget()
 
-    def sup_superuserdb(self, listSelection):
+    def sup_userdb(self, listSelection):
 
-        if self.SuperUserCount > 1:
-            req = "DELETE FROM `compte_admin` WHERE idcompte_admin={}".format("'" + str(listSelection[0]) + "'")
+        listTemp = listSelection.get(listSelection.curselection())
+
+        if self.action == "SupprimerUser":
+            req = "DELETE FROM `customer` WHERE IdCustomer={}".format("'" + str(listTemp[0]) + "'")
+
             try:
                 cursor.execute(req)
                 conn.commit()
 
-                tm.showinfo("Succès!", "La Suppression de l'Administrateur a réussi!")
+                tm.showinfo("Succès!", "La Suppression de l'Utilisateur a réussi!")
                 self.clear_ui()
                 self.listedisplayed.pack_forget()
             except:
                 conn.rollback()
-                tm.showinfo("Erreur", "La Suppression l'Administrateur a échoué!")
+                tm.showinfo("Erreur", "La Suppression l'Utilisateur a échoué!")
                 self.clear_ui()
                 self.listedisplayed.pack_forget()
-        else:
-            tm.showinfo("Erreur", "Vous ne pouvez pas Supprimer le Dernier compte Administrateur!")
+
+
+        elif self.action == "SupprimerSuperUser":
+            req = "DELETE FROM `compte_admin` WHERE idcompte_admin={}".format("'" + str(listTemp[0]) + "'")
+            if self.SuperUserCount > 1:
+
+                try:
+                    cursor.execute(req)
+                    conn.commit()
+
+                    tm.showinfo("Succès!", "La Suppression de l'Administrateur a réussi!")
+                    self.clear_ui()
+                    self.listedisplayed.pack_forget()
+                except:
+                    conn.rollback()
+                    tm.showinfo("Erreur", "La Suppression l'Administrateur a échoué!")
+                    self.clear_ui()
+                    self.listedisplayed.pack_forget()
+            else:
+                tm.showinfo("Erreur", "Vous ne pouvez pas Supprimer le Dernier compte Administrateur!")
 
     def menu_bar(self):
 
         menu8 = Menu(menubar, tearoff=0)
         menu8.add_command(label="Créer", command=lambda: self.add_user("Admin"))
-        menu8.add_command(label="Editer", command=lambda: self.get_superuserdb("EditerSuperUser"))
-        menu8.add_command(label="Supprimer", command=lambda: self.get_superuserdb("SupprimerSuperUser"))
+        menu8.add_command(label="Editer", command=lambda: self.get_userdb("EditerSuperUser"))
+        menu8.add_command(label="Supprimer", command=lambda: self.get_userdb("SupprimerSuperUser"))
         menubar.add_cascade(label="Administrateurs", menu=menu8)
 
         menu2 = Menu(menubar, tearoff=0)
         menu2.add_command(label="Créer", command=lambda: self.add_user("Normal"))
-        menu2.add_command(label="Editer")
-        menu2.add_command(label="Supprimer")
+        menu2.add_command(label="Editer", command=lambda: self.get_userdb("EditerUser"))
+        menu2.add_command(label="Supprimer", command=lambda: self.get_userdb("SupprimerUser"))
         menubar.add_cascade(label="Utilisateurs", menu=menu2)
 
         menu3 = Menu(menubar, tearoff=0)
