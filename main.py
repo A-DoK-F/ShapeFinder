@@ -245,7 +245,9 @@ class LoginFrame(Frame):
             tm.showinfo("Erreur", "Veuillez Indiqué Votre Ville")
         else:
             if usertype == "Normal":
-                req = "INSERT INTO {} (name, firstname, email, street, zip, city, phone1, phone2, title, payment, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + phone_fix + "'","'" + phone_mobile + "'","'" + titre + "'","'" + payer + "'", "'" + compte + "'", "'" + mdp + "'")
+                req = "INSERT INTO {} (name, firstname, email, street, zip, city, phone1, phone2, title, payment, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'",
+                                                                                                                                                                                                     "'" + code + "'", "'" + ville + "'", "'" + phone_fix + "'","'" + phone_mobile + "'",
+                                                                                                                                                                                                     "'" + titre + "'","'" + payer + "'", "'" + compte + "'", "'" + mdp + "'")
             else:
                 req = "INSERT INTO {} (name, firstname, email, street, zip, city, login, password) VALUES ({}, {}, {}, {}, {} ,{} , {}, {})".format(tabledb, "'" + nom + "'", "'" + prenom + "'", "'" + mail + "'", "'" + rue + "'", "'" + code + "'", "'" + ville + "'", "'" + compte + "'", "'" + mdp + "'")
             print(req)
