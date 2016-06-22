@@ -30,6 +30,7 @@ class LoginFrame(Frame):
         self.forme_image = ""
         self.action = ""
         self.scrollbar = Scrollbar(acceuil)
+        self.SuperUserCount = 0
         self.listedisplayed = Listbox(acceuil, yscrollcommand = self.scrollbar.set)
         self.scrollbar.config( command = self.listedisplayed.yview )
 
@@ -80,6 +81,7 @@ class LoginFrame(Frame):
     def _login_btn_clickked(self):
         #print("Clicked")
         global changed
+        self.get_superusercount()
         username = self.entry_cmpt.get()
         password = self.entry_pwd.get()
 
@@ -100,6 +102,19 @@ class LoginFrame(Frame):
             tm.showinfo("Login info", "Welcome " + username + "!")
             self.clear_ui()
             self.menu_bar()
+
+    def get_superusercount(self):
+        req = "SELECT * FROM compte_admin"
+
+        cursor.execute(req)
+        result = 0
+        compteur = 0
+        resultatreq = list()
+
+        while result != None:
+            result = cursor.fetchone()
+            if result != None:
+                self.SuperUserCount += 1
 
     def clear_ui(self):
         for widget in self.winfo_children():
@@ -323,7 +338,7 @@ class LoginFrame(Frame):
 
         self.clear_ui()
         self.delete_list()
-
+        print(self.SuperUserCount)
         for i in range(0,len(resultatreq)):
             self.listedisplayed.insert(i, resultatreq[i])
 
@@ -331,6 +346,8 @@ class LoginFrame(Frame):
         self.listedisplayed.pack(side=TOP,expand=1, fill = BOTH)
 
         if self.action == "EditerSuperUser":
+            selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
+        if self.action == "SupprimerSuperUser":
             selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
         else:
             selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_imagedb(self.listedisplayed))
@@ -382,6 +399,8 @@ class LoginFrame(Frame):
             cancelbtn = Button(self, text ='Terminer', command=self.clear_ui)
             cancelbtn.grid(row=8, sticky=N)
 
+        elif self.action == "SupprimerSuperUser":
+            self.sup_superuserdb(listTemp)
         else:
             pass
 
@@ -412,8 +431,7 @@ class LoginFrame(Frame):
     def modify_info_superuserdb(self, champ, listSelection):
 
         variable = self.temp_entry.get()
-        print(champ)
-        print(variable)
+
         if variable == "":
             tm.showinfo("Erreur", "Veuillez Indiqué la Nouvelle Valeur")
         else:
@@ -452,7 +470,7 @@ class LoginFrame(Frame):
         if forme == "":
             tm.showinfo("Erreur", "Veuillez Indiqué une Forme pour Votre Image")
         else:
-            req = "UPDATE `images` SET FormeImage={} WHERE Id={}".format("'" + forme + "'", "'" + str(listSelection[0]) + "'")
+            req = "UPDATE `images` SET FormeImage={} WHERE id={}".format("'" + forme + "'", "'" + str(listSelection[0]) + "'")
         try:
             cursor.execute(req)
             conn.commit()
@@ -481,12 +499,31 @@ class LoginFrame(Frame):
             self.clear_ui()
             self.listedisplayed.pack_forget()
 
+    def sup_superuserdb(self, listSelection):
+
+        if self.SuperUserCount > 1:
+            req = "DELETE FROM `compte_admin` WHERE idcompte_admin={}".format("'" + str(listSelection[0]) + "'")
+            try:
+                cursor.execute(req)
+                conn.commit()
+
+                tm.showinfo("Succès!", "La Suppression de l'Administrateur a réussi!")
+                self.clear_ui()
+                self.listedisplayed.pack_forget()
+            except:
+                conn.rollback()
+                tm.showinfo("Erreur", "La Suppression l'Administrateur a échoué!")
+                self.clear_ui()
+                self.listedisplayed.pack_forget()
+        else:
+            tm.showinfo("Erreur", "Vous ne pouvez pas Supprimer le Dernier compte Administrateur!")
+
     def menu_bar(self):
 
         menu8 = Menu(menubar, tearoff=0)
         menu8.add_command(label="Créer", command=lambda: self.add_user("Admin"))
         menu8.add_command(label="Editer", command=lambda: self.get_superuserdb("EditerSuperUser"))
-        menu8.add_command(label="Supprimer")
+        menu8.add_command(label="Supprimer", command=lambda: self.get_superuserdb("SupprimerSuperUser"))
         menubar.add_cascade(label="Administrateurs", menu=menu8)
 
         menu2 = Menu(menubar, tearoff=0)
