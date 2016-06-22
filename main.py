@@ -29,7 +29,10 @@ class LoginFrame(Frame):
         self.entry_forme = object
         self.forme_image = ""
         self.action = ""
-        self.listedisplayed = Listbox(acceuil)
+        self.scrollbar = Scrollbar(acceuil)
+        self.listedisplayed = Listbox(acceuil, yscrollcommand = self.scrollbar.set)
+        self.scrollbar.config( command = self.listedisplayed.yview )
+
         self.SuperUserDBFlag = 1
 
         self.logged = False
@@ -321,7 +324,9 @@ class LoginFrame(Frame):
         for i in range(0,len(resultatreq)):
             self.listedisplayed.insert(i, resultatreq[i])
 
-        self.listedisplayed.pack(side=TOP)
+        self.scrollbar.pack(side= RIGHT,fill=Y)
+        self.listedisplayed.pack(side=TOP, fill = BOTH)
+
         if self.action == "EditerSuperUser":
             selectbtn = Button(self, text ='Selectionner', command=lambda: self.rec_modify_superuserdb(self.listedisplayed))
         else:
